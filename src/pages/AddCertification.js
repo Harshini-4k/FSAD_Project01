@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 
 function AddCertification({ refresh }) {
   const [form, setForm] = useState({
@@ -12,45 +11,90 @@ function AddCertification({ refresh }) {
 
   const [file, setFile] = useState(null);
 
-  const submit = async () => {
-    const data = new FormData();
+  const submit = () => {
+    if (!form.name || !form.organization) {
+      alert("Please fill all required fields");
+      return;
+    }
 
-    Object.keys(form).forEach(key => {
-      data.append(key, form[key]);
+    // Get existing certificates
+    const certificates =
+      JSON.parse(localStorage.getItem("certificates")) || [];
+
+    // New certificate object
+    const newCertificate = {
+      name: form.name,
+      org: form.organization, // important for MyCertificates.js
+      issueDate: form.issueDate,
+      expiryDate: form.expiryDate,
+      status: form.status,
+      fileName: file ? file.name : null
+    };
+
+    certificates.push(newCertificate);
+
+    // Save to localStorage
+    localStorage.setItem("certificates", JSON.stringify(certificates));
+
+    alert("Certification Added Successfully");
+
+    // Reset form
+    setForm({
+      name: "",
+      organization: "",
+      issueDate: "",
+      expiryDate: "",
+      status: ""
     });
 
-    data.append("certificate", file);
+    setFile(null);
 
-    await axios.post("http://localhost:5000/add-certification", data);
-
-    alert("Certification Added");
-    refresh();
+    if (refresh) refresh();
   };
 
   return (
-    <div>
+    <div className="form-container">
       <h2>Add Certification</h2>
 
-      <input placeholder="Certification Name"
-        onChange={(e)=>setForm({...form,name:e.target.value})}/>
+      <input
+        placeholder="Certification Name"
+        value={form.name}
+        onChange={(e) => setForm({ ...form, name: e.target.value })}
+      />
 
-      <input placeholder="Organization"
-        onChange={(e)=>setForm({...form,organization:e.target.value})}/>
+      <input
+        placeholder="Organization"
+        value={form.organization}
+        onChange={(e) => setForm({ ...form, organization: e.target.value })}
+      />
 
-      <input type="date"
-        onChange={(e)=>setForm({...form,issueDate:e.target.value})}/>
+      <input
+        type="date"
+        value={form.issueDate}
+        onChange={(e) => setForm({ ...form, issueDate: e.target.value })}
+      />
 
-      <input type="date"
-        onChange={(e)=>setForm({...form,expiryDate:e.target.value})}/>
+      <input
+        type="date"
+        value={form.expiryDate}
+        onChange={(e) => setForm({ ...form, expiryDate: e.target.value })}
+      />
 
-      <select onChange={(e)=>setForm({...form,status:e.target.value})}>
-        <option>Status</option>
-        <option>Active</option>
-        <option>Expired</option>
+      <select
+        value={form.status}
+        onChange={(e) => setForm({ ...form, status: e.target.value })}
+      >
+        <option value="">Select Status</option>
+        <option value="Active">Active</option>
+        <option value="Expired">Expired</option>
       </select>
 
-      <input type="file"
-        onChange={(e)=>setFile(e.target.files[0])}/>
+      <input
+        type="file"
+        onChange={(e) => setFile(e.target.files[0])}
+      />
+
+      {file && <p>Uploaded: {file.name}</p>}
 
       <button onClick={submit}>Submit</button>
     </div>

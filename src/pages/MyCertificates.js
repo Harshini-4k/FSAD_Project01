@@ -18,9 +18,16 @@ function MyCertificates() {
         certificates.map((cert, index) => (
           <div className="card" key={index}>
             <h3>{cert.name}</h3>
-            <p>Organization: {cert.org}</p>
-            <p>Issued: {cert.issueDate}</p>
-            <p>Expiry: {cert.expiryDate}</p>
+            <p>Organization: {cert.organization}</p>
+            <p>Issued Date: {cert.issueDate}</p>
+            <p>Expiry Date: {cert.expiryDate}</p>
+            <p>Status: {cert.status}</p>
+
+            {cert.file && (
+              <p>
+                File: <a href={cert.file} target="_blank" rel="noreferrer">View Certificate</a>
+              </p>
+            )}
           </div>
         ))
       )}

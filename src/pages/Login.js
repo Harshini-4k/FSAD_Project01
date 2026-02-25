@@ -1,43 +1,47 @@
 import React, { useState } from "react";
-import axios from "axios";
 
-function Login({ setUser }) {
+function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const login = async () => {
-    try {
-      const res = await axios.post("http://localhost:5000/login", {
-        email,
-        password
-      });
+  const loginUser = () => {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
 
-      setUser(res.data);
-    } catch (error) {
-      alert("Invalid login");
+    const validUser = users.find(
+      (user) => user.email === email && user.password === password
+    );
+
+    if (validUser) {
+      alert("Login successful");
+
+      // store logged-in user
+      localStorage.setItem("currentUser", JSON.stringify(validUser));
+
+      window.location.href = "/";
+    } else {
+      alert("Invalid email or password");
     }
   };
 
   return (
-    <div>
+    <div className="form-container">
       <h2>Login</h2>
 
       <input
         type="email"
         placeholder="Email"
+        value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
 
       <input
         type="password"
         placeholder="Password"
+        value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
 
-      <button onClick={login}>Login</button>
-
-      <p>Test User: user@gmail.com / 123456</p>
-      <p>Admin: admin@gmail.com / admin123</p>
+      <button onClick={loginUser}>Login</button>
     </div>
   );
 }

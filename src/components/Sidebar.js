@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FaHome, FaPlusCircle, FaCertificate, FaBell, FaSignInAlt } from "react-icons/fa";
+import { FaHome, FaPlusCircle, FaCertificate, FaBell, FaSignInAlt, FaUserPlus } from "react-icons/fa";
 
 function Sidebar() {
   return (
@@ -25,6 +25,10 @@ function Sidebar() {
 
       <Link to="/login">
         <FaSignInAlt /> Login
+      </Link>
+
+      <Link to="/signup">
+        <FaUserPlus /> Sign Up
       </Link>
     </div>
   );
